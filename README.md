@@ -17,7 +17,7 @@
 ## 安装
 
 ```bash
-git clone https://github.com/<your-account>/pdf_agent_translator.git
+git clone https://github.com/AbsurdMirror/pdf_agent_translator.git
 cd pdf_agent_translator
 python -m venv .venv
 ```

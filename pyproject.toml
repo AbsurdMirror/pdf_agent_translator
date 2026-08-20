@@ -29,6 +29,10 @@ dependencies = [
     "requests>=2.31.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/AbsurdMirror/pdf_agent_translator"
+Issues = "https://github.com/AbsurdMirror/pdf_agent_translator/issues"
+
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 
