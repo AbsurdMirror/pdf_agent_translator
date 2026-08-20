@@ -117,7 +117,7 @@ class TranslationMeta(BaseModel):
 
     status: str = "idle"
     model_name: str | None = None
-    backend: str | None = Field(default=None, description="qfaos 或 openai_fallback")
+    backend: str | None = Field(default=None, description="openai")
     source_lang: str = "en"
     target_lang: str = "zh"
     domain: str = "academic_paper"

@@ -13,6 +13,28 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+
+def find_project_root(start: Path | None = None) -> Path:
+    """从某文件向上找到本项目根（含 name=pdf_agent_translator 的 pyproject）。
+
+    \\param start 起点，默认本文件。
+    \\return project_root。
+    \\throws FileNotFoundError 找不到。
+    """
+
+    cursor = (start or Path(__file__)).resolve()
+    if cursor.is_file():
+        cursor = cursor.parent
+    for folder in [cursor, *cursor.parents]:
+        pyproject = folder / "pyproject.toml"
+        if not pyproject.is_file():
+            continue
+        text = pyproject.read_text(encoding="utf-8")
+        if 'name = "pdf_agent_translator"' in text:
+            return folder
+    raise FileNotFoundError("找不到 pdf_agent_translator 的 pyproject.toml")
+
+
 _SECTION_RE = re.compile(r"^\[([A-Za-z0-9_.-]+)\]\s*$")
 _KV_RE = re.compile(r"^([A-Za-z0-9_.-]+)\s*=\s*(.*)$")
 
@@ -89,21 +111,12 @@ class TranslateSettings:
 
 
 @dataclass
-class QfaosSettings:
-    """qfaos 定位。"""
-
-    root: str = ""
-    memory_backend: str = "in_memory"
-
-
-@dataclass
 class Settings:
     """运行时完整配置。"""
 
     aliyun: AliyunSettings = field(default_factory=AliyunSettings)
     llm: LlmSettings = field(default_factory=LlmSettings)
     translate: TranslateSettings = field(default_factory=TranslateSettings)
-    qfaos: QfaosSettings = field(default_factory=QfaosSettings)
 
 
 def _merge_section(target: dict[str, str], incoming: dict[str, str] | None) -> None:
@@ -164,9 +177,6 @@ def load_settings(config_path: Path | None = None) -> Settings:
     aliyun: dict[str, str] = {}
     llm: dict[str, str] = {}
     translate: dict[str, str] = {}
-    qfaos: dict[str, str] = {}
-
-    from pdf_agent_translator.qfaos_path import find_project_root
 
     try:
         project_root = find_project_root()
@@ -184,7 +194,6 @@ def load_settings(config_path: Path | None = None) -> Settings:
             _merge_section(aliyun, parsed.get("aliyun"))
             _merge_section(llm, parsed.get("llm"))
             _merge_section(translate, parsed.get("translate"))
-            _merge_section(qfaos, parsed.get("qfaos"))
 
     if os.environ.get("ALIYUN_ACCESS_KEY_ID"):
         aliyun["access_key_id"] = os.environ["ALIYUN_ACCESS_KEY_ID"]
@@ -199,8 +208,6 @@ def load_settings(config_path: Path | None = None) -> Settings:
         llm["base_url"] = os.environ["PDF_TRANSLATE_LLM_BASE_URL"]
     if os.environ.get("PDF_TRANSLATE_LLM_MODEL"):
         llm["model_name"] = os.environ["PDF_TRANSLATE_LLM_MODEL"]
-    if os.environ.get("QFAOS_ROOT"):
-        qfaos["root"] = os.environ["QFAOS_ROOT"]
 
     endpoint = aliyun.get("endpoint", "docmind-api.cn-hangzhou.aliyuncs.com")
     endpoint = endpoint.replace("https://", "").replace("http://", "").rstrip("/")
@@ -228,10 +235,6 @@ def load_settings(config_path: Path | None = None) -> Settings:
             write_yaml=_as_bool(translate.get("write_yaml", ""), False),
             context_window_blocks=_as_int(translate.get("context_window_blocks", ""), 10),
             stop_on_block_error=_as_bool(translate.get("stop_on_block_error", ""), False),
-        ),
-        qfaos=QfaosSettings(
-            root=qfaos.get("root", ""),
-            memory_backend=qfaos.get("memory_backend", "in_memory"),
         ),
     )
 

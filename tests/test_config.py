@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 
-from pdf_agent_translator.config import iter_config_files, lang_display, parse_simple_toml
+from pdf_agent_translator.config import (
+    find_project_root,
+    iter_config_files,
+    lang_display,
+    parse_simple_toml,
+)
 
 
 def test_parse_simple_toml(tmp_path: Path) -> None:
@@ -45,3 +50,9 @@ def test_lang_display() -> None:
     assert lang_display("zh") == "Chinese"
     assert lang_display("en") == "English"
     assert lang_display("xx") == "xx"
+
+
+def test_project_root() -> None:
+    root = find_project_root()
+    assert (root / "pyproject.toml").is_file()
+    assert 'name = "pdf_agent_translator"' in (root / "pyproject.toml").read_text(encoding="utf-8")

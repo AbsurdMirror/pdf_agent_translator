@@ -94,10 +94,6 @@ class Job:
     def logs_dir(self) -> Path:
         return self.out_dir / "logs"
 
-    @property
-    def qfaos_logs_dir(self) -> Path:
-        return self.out_dir / "qfaos_logs"
-
 
 def dump_job_toml(job: Job) -> None:
     """把 phase 写进 job.toml。

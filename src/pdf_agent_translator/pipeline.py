@@ -205,7 +205,7 @@ class Pipeline:
         def on_item(idx: int, _total: int, status: str) -> None:
             self._emit("translate", int((idx + 1) / total * 100), f"{idx + 1}/{total} {status}", store.document)
 
-        backend = run_translation(store, self.settings, log_dir=job.qfaos_logs_dir, on_progress=on_item)
+        backend = run_translation(store, self.settings, on_progress=on_item)
         refresh_translation_counts(store.document)
         save_document(job.document_json, store.document)
         leftover = store.first_unfinished_index() is not None

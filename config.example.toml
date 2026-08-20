@@ -20,6 +20,3 @@ source_lang = "en"
 target_lang = "zh"
 context_window_blocks = 10
 stop_on_block_error = false
-
-[qfaos]
-root = ""

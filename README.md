@@ -3,7 +3,7 @@
 把 PDF 解析成结构化块，按块翻译，生成可离线阅读的双语 HTML。
 
 - **解析**：阿里云 DocMind（VLM 增强）
-- **翻译**：默认 OpenAI 兼容接口（已验证 MiniMax-M3）；可选 [qiufeng-agent-os](https://github.com/AbsurdMirror/qiufeng-agent-os)（需 Python ≥ 3.12）
+- **翻译**：OpenAI 兼容接口（已验证 MiniMax-M3，请求关闭思考）
 - **阅读**：`document.html` + 同目录 `figures/`。文章模式 / 编辑模式、目录、对照高亮
 
 本仓库可独立克隆使用，不附带参考实现或密钥。
@@ -61,7 +61,7 @@ request_timeout_seconds = 120
 
 覆盖顺序（后者覆盖前者）：默认值 < `~/.pdf_agent_translator/config.toml` < 仓库根 `config.toml` < 当前目录 `pdf_agent_translator.toml` < `--config` < 环境变量。
 
-环境变量：`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`PDF_TRANSLATE_LLM_API_KEY`（或 `OPENAI_API_KEY`）、`PDF_TRANSLATE_LLM_BASE_URL`、`PDF_TRANSLATE_LLM_MODEL`、`QFAOS_ROOT`。
+环境变量：`ALIYUN_ACCESS_KEY_ID`、`ALIYUN_ACCESS_KEY_SECRET`、`PDF_TRANSLATE_LLM_API_KEY`（或 `OPENAI_API_KEY`）、`PDF_TRANSLATE_LLM_BASE_URL`、`PDF_TRANSLATE_LLM_MODEL`。
 
 本机若配置了 SOCKS 代理，翻译请求会忽略环境代理直连（避免缺 `socksio` 直接失败）。
 
@@ -110,12 +110,6 @@ out/
 - 图注/表题仅认 DocMind 的 `figure_name` / `figure_note` / `table_name` / `table_note`
 - 浏览器里的修改要点「下载 JSON/HTML」才保存；`--render` 默认不覆盖更新过的 HTML（加 `--force`）
 
-## 可选：qfaos
-
-翻译会先尝试进程内 qfaos。当前 qfaos 使用 Python 3.12 的 `type` 别名，**3.10/3.11 会自动落到 OpenAI 兼容接口**，并关闭 MiniMax 思考（`thinking.disabled`）。
-
-若要用 qfaos：Python ≥ 3.12，把 [qiufeng-agent-os](https://github.com/AbsurdMirror/qiufeng-agent-os) 放在本仓库的**上一级兄弟目录**，或设 `QFAOS_ROOT` / `config.toml` 的 `[qfaos] root`。
-
 ## 测试
 
 ```bash
@@ -130,7 +124,7 @@ pytest
 
 - 密钥、`config.toml`、`.env`
 - 解析/翻译产物（`out/`、HTML、PDF）
-- `qiufeng-agent-os`、`PDF_Translator` 参考仓库
+- 参考实现或其他翻译工具仓库
 
 ## 许可
 

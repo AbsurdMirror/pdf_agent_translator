@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """剥离 MiniMax 默认塞进 content 的 <think> 块。
 
-\\file qfaos 关不了思考时，这是正文保险。
+\\file 请求已关思考；若模型仍把 <think> 塞进 content，这里剥掉。
 """
 
 from __future__ import annotations

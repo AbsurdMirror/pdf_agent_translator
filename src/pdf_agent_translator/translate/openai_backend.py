@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""OpenAI 兼容接口兜底。
+"""OpenAI 兼容 Chat Completions。
 
 \\file 用 requests 直连，避免本机 SOCKS 代理把 openai/httpx 卡死。
 """
@@ -92,7 +92,7 @@ def translate_with_openai(
 ) -> str:
     """按序逐块翻译。
 
-    \\return ``openai_fallback``。
+    \\return ``openai``。
     """
 
     src = lang_display(source_lang)
@@ -132,8 +132,8 @@ def translate_with_openai(
         if on_progress:
             on_progress(idx, total, pair.target.status.value)
 
-    store.document.translation.backend = "openai_fallback"
+    store.document.translation.backend = "openai"
     store.document.translation.model_name = settings.model_name
     store.document.translation.status = "success"
     store.persist()
-    return "openai_fallback"
+    return "openai"
