@@ -1,0 +1,25 @@
+# 复制为 config.toml 后填入密钥。config.toml 已被 gitignore，不要提交。
+
+[aliyun]
+access_key_id = ""
+access_key_secret = ""
+endpoint = "docmind-api.cn-hangzhou.aliyuncs.com"
+
+[llm]
+provider = "litellm"
+client = "custom"
+model_name = "MiniMax-M3"
+api_key = ""
+base_url = "https://api.minimaxi.com/v1"
+context_tokens = 204800
+max_output_tokens = 4096
+request_timeout_seconds = 120
+
+[translate]
+source_lang = "en"
+target_lang = "zh"
+context_window_blocks = 10
+stop_on_block_error = false
+
+[qfaos]
+root = ""
